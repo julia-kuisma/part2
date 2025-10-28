@@ -3,6 +3,7 @@ const Course = (props) => {
 		<>
 			<Header name={props.course.name} />
 			<Content parts={props.course.parts} />
+			<Total parts={props.course.parts} />
 		</>
 	)
 }
@@ -31,11 +32,11 @@ const Part = (props) => {
 
 const Total = (props) => {
 	let total = 0;
-	props.course.parts.forEach(part => {
+	props.parts.forEach(part => {
 		total += part.exercises;
 	});
 	return(
-		<p>Number of exercises: {total}</p>
+		<p><strong>Number of exercises: {total}</strong></p>
 	)
 }
 
@@ -58,7 +59,12 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
-      }
+      },
+	  {
+		name: 'Redux',
+		exercises: 11,
+		id: 4
+	  }
     ]
   }
 
