@@ -24,6 +24,11 @@
       "id": "e351",
       "name": "Erkki Esimerkki",
       "number": "040 123 4567"
+    },
+    {
+      "id": "7d5b",
+      "name": "Etunimi Sukunimi",
+      "number": "+3581234567"
     }
   ]
 }
