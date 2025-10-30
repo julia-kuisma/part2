@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 
 const Filter = (props) => {
@@ -29,7 +28,7 @@ const PersonList = (props) => {
 	return(
 		<ul>
 			{props.persons.map(person => (
-				<li key={person.name}>{person.name} {person.number}</li>
+				<li key={person.id}>{person.name} {person.number} <button id={person.id} onClick={() => props.deleteOnClick(person.id, person.name)}>Delete</button></li>
 			))}
 		</ul>
 	)
@@ -73,7 +72,6 @@ const App = () => {
 			.create(nameObject)
 			.then(response => {
 				setPersons(persons.concat(nameObject))
-				setNewNote('')
 				setNewName('')
 				setNewNumber('')
 			})
@@ -82,6 +80,14 @@ const App = () => {
 
 	const handleFilter = (event) => {
 		setFilter(event.target.value);
+	}
+
+	const handleDeletePerson = (id, name) => {
+		if (window.confirm(`Remove '${name}' from the server?`)) {
+			personService
+			.deletePerson(id)
+			.then(setPersons(persons.filter(p => p.id !== id)))
+		}
 	}
 
 	useEffect(() => {
@@ -99,7 +105,7 @@ const App = () => {
 			<h2>Add a new</h2>
 			<Form nameValue={newName} nameChange={handleNameChange} numberValue={newNumber} numberChange={handleNumberChange} addPerson={addName} />
 			<h2>Numbers</h2>
-			<PersonList persons={filteredPersons} />
+			<PersonList persons={filteredPersons} deleteOnClick={handleDeletePerson} />
 		</>
 	)
 }
