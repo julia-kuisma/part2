@@ -84,6 +84,9 @@ const App = () => {
 					setPersons(persons.map(p => p.id !== existingPerson.id ? p : returnedPerson))
 					setErrorMessage({status: 'success', text: `Modified ${nameObject.name}`})
 				})
+				.catch(() => {
+					setErrorMessage({status: 'failed', text: `Information of ${nameObject.name} has already been removed from server`})
+				})
 			}
 		} else {
 			personService
@@ -108,6 +111,9 @@ const App = () => {
 			.then(response => {
 				setPersons(persons.filter(p => p.id !== id))
 				setErrorMessage({status: 'success', text: `Removed ${name}`})
+			})
+			.catch(() => {
+				setErrorMessage({status: 'failed', text: `Information of ${name} has already been removed from server`})
 			})
 		}
 	}

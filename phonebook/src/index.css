@@ -11,4 +11,7 @@
     &.status-undefined {
         display: none;
     }
+    &.status-failed {
+        color: red;
+    }
 }
