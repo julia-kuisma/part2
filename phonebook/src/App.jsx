@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css';
 
 const Filter = (props) => {
 	return(
@@ -34,6 +35,13 @@ const PersonList = (props) => {
 	)
 }
 
+const Notification = (props) => {
+	const status = "status status-"+props.message.status;
+	return(
+		<div className={status}>{props.message.text}</div>
+	);
+}
+
 const App = () => {
 	const [persons, setPersons] = useState([
 		{ name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -44,6 +52,7 @@ const App = () => {
 	const [newName, setNewName] = useState('Firstname Lastname')
 	const [newNumber, setNewNumber] = useState('+3581234567')
 	const [filter, setFilter] = useState("");
+	const [errorMessage, setErrorMessage] = useState([])
 
 	const filteredPersons = persons.filter(person =>
     	person.name.toLowerCase().includes(filter.toLowerCase())
@@ -73,6 +82,7 @@ const App = () => {
 				.update(existingPerson.id, changedPerson)
 				.then(returnedPerson => {
 					setPersons(persons.map(p => p.id !== existingPerson.id ? p : returnedPerson))
+					setErrorMessage({status: 'success', text: `Modified ${nameObject.name}`})
 				})
 			}
 		} else {
@@ -82,6 +92,7 @@ const App = () => {
 				setPersons(persons.concat(nameObject))
 				setNewName('')
 				setNewNumber('')
+				setErrorMessage({status: 'success', text: `Added ${nameObject.name}`})
 			})
 		}
 	}
@@ -94,7 +105,10 @@ const App = () => {
 		if (window.confirm(`Remove '${name}' from the server?`)) {
 			personService
 			.deletePerson(id)
-			.then(setPersons(persons.filter(p => p.id !== id)))
+			.then(response => {
+				setPersons(persons.filter(p => p.id !== id))
+				setErrorMessage({status: 'success', text: `Removed ${name}`})
+			})
 		}
 	}
 
@@ -109,6 +123,7 @@ const App = () => {
 	return (
 		<>
 			<h1>Phonebook</h1>
+			<Notification message={errorMessage} />
 			<Filter onChange={handleFilter}/>
 			<h2>Add a new</h2>
 			<Form nameValue={newName} nameChange={handleNameChange} numberValue={newNumber} numberChange={handleNumberChange} addPerson={addName} />
