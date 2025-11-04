@@ -31,6 +31,10 @@ const CountryList = (props) => {
 						))}
 					</ul>
 					<img src={country.flags.png} alt={country.flags.alt} />
+					<h2>Weather in {country.capital}</h2>
+					<p>Temperature: {(props.weather.main.temp - 273.15).toFixed(2)} Celsius</p>
+					<img src={"https://openweathermap.org/img/wn/"+props.weather.weather[0].icon+"@2x.png"} alt={props.weather.weather[0].description} />
+					<p>Wind: {props.weather.wind.speed} m/s</p>
 				</>
 			)
 		}
@@ -40,6 +44,7 @@ const CountryList = (props) => {
 function App() {
 	const [countries, setCountries] = useState([])
 	const [search, setSearch] = useState("")
+	const [weather, setWeather] = useState([])
 
 	let filteredCountries = countries.filter(country =>
     	country.name.common.toLowerCase().includes(search.toLowerCase())
@@ -52,6 +57,16 @@ function App() {
 			setCountries(response.data)
 		})
 	}, [])
+
+	useEffect(() => {
+		if (filteredCountries.length == 1) {
+			countryServise
+			.getWeather(filteredCountries[0].capital)
+			.then(response => {
+				setWeather(response.data)
+			})
+		}
+	}, [search])
 
 	const handleSearchChange = (event) => {
 		const newValue = event.target.value;
@@ -66,7 +81,7 @@ function App() {
 		<>
 			<label htmlFor="countrySearch">Find countries</label>
 			<input type="text" id="countrySearch" onChange={handleSearchChange} />
-			<CountryList countries={filteredCountries} onClick={handleOnClick} />
+			<CountryList countries={filteredCountries} weather={weather} onClick={handleOnClick} />
 		</>
   	)
 }
