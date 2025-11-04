@@ -10,7 +10,7 @@ const CountryList = (props) => {
 		return(
 			<ul>
 				{props.countries.map(country => (
-					<li key={country.name.common}>{country.name.common}</li>
+					<li key={country.name.common}>{country.name.common}<button id={country.name.common} onClick={props.onClick}>Show</button></li>
 				))}
 			</ul>
 		)
@@ -41,7 +41,7 @@ function App() {
 	const [countries, setCountries] = useState([])
 	const [search, setSearch] = useState("")
 
-	const filteredCountries = countries.filter(country =>
+	let filteredCountries = countries.filter(country =>
     	country.name.common.toLowerCase().includes(search.toLowerCase())
   	);
 
@@ -58,11 +58,15 @@ function App() {
 		setSearch(newValue);
 	}
 
+	const handleOnClick = (event) => {
+		setSearch(event.target.id);
+	}
+
 	return (
 		<>
 			<label htmlFor="countrySearch">Find countries</label>
 			<input type="text" id="countrySearch" onChange={handleSearchChange} />
-			<CountryList countries={filteredCountries} />
+			<CountryList countries={filteredCountries} onClick={handleOnClick} />
 		</>
   	)
 }
